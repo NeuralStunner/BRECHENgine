@@ -697,8 +697,11 @@ ST_Responder (event_t* ev)
       // 'fa' cheat for killer fucking arsenal
       else if (cht_CheckCheatSP(&cheat_ammonokey, ev->data2))
       {
-	plyr->armorpoints = deh_idfa_armor;
-	plyr->armortype = deh_idfa_armor_class;
+	if (plyr->armorpoints < deh_idfa_armor)
+	{
+		plyr->armorpoints = deh_idfa_armor;
+		plyr->armortype = deh_idfa_armor_class;
+	}
 	
 	// [crispy] give backpack
 	if (!plyr->backpack)
@@ -723,8 +726,11 @@ ST_Responder (event_t* ev)
       // 'kfa' cheat for key full ammo
       else if (cht_CheckCheatSP(&cheat_ammo, ev->data2))
       {
-	plyr->armorpoints = deh_idkfa_armor;
-	plyr->armortype = deh_idkfa_armor_class;
+	if (plyr->armorpoints < deh_idkfa_armor)
+	{
+		plyr->armorpoints = deh_idkfa_armor;
+		plyr->armortype = deh_idkfa_armor_class;
+	}
 	
 	// [crispy] give backpack
 	if (!plyr->backpack)
