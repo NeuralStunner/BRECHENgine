@@ -1093,6 +1093,30 @@ void P_PlayerInSpecialSector (player_t* player)
 	
     sector = player->mo->subsector->sector;
 
+	// [NS] Trigger upon entering the sector.
+    switch (sector->special)
+    {
+
+      case 9:
+	// SECRET SECTOR
+	// [crispy] show centered "Secret Revealed!" message
+	if (showMessages && crispy->secretmessage)
+	{
+	    int sfx_id;
+
+	    // [crispy] play DSSECRET if available
+	    sfx_id = I_GetSfxLumpNum(&S_sfx[sfx_secret]) != -1 ? sfx_secret : sfx_itmbk;
+
+	    player->centermessage = HUSTR_SECRETFOUND;
+	    if (player == &players[consoleplayer])
+	        S_StartSound(NULL, sfx_id);
+	}
+	player->secretcount++;
+	sector->special = 0;
+	break;
+
+    };
+
     // Falling, not all the way down yet?
     if (player->mo->z != sector->floorheight)
 	return;	
@@ -1127,24 +1151,6 @@ void P_PlayerInSpecialSector (player_t* player)
 	    if (!(leveltime&0x1f))
 		P_DamageMobj (player->mo, NULL, NULL, 20);
 	}
-	break;
-			
-      case 9:
-	// SECRET SECTOR
-	// [crispy] show centered "Secret Revealed!" message
-	if (showMessages && crispy->secretmessage)
-	{
-	    int sfx_id;
-
-	    // [crispy] play DSSECRET if available
-	    sfx_id = I_GetSfxLumpNum(&S_sfx[sfx_secret]) != -1 ? sfx_secret : sfx_itmbk;
-
-	    player->centermessage = HUSTR_SECRETFOUND;
-	    if (player == &players[consoleplayer])
-	        S_StartSound(NULL, sfx_id);
-	}
-	player->secretcount++;
-	sector->special = 0;
 	break;
 			
       case 11:
