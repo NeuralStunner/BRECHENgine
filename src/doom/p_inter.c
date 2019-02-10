@@ -389,17 +389,25 @@ P_TouchSpecialThing
 	
 	// bonus items
       case SPR_BON1:
-	player->health++;		// can go over 100%
-	if (player->health > deh_max_health)
-	    player->health = deh_max_health;
-	player->mo->health = player->health;
+	// [NS] Don't reduce if already over cap.
+	i = player->health + 1;	// can go over 100%
+	if (i > deh_max_health)
+	    i = deh_max_health;
+	if (i > player->health)
+	{
+		player->health = i;
+		player->mo->health = player->health;
+	}
 	player->message = DEH_String(GOTHTHBONUS);
 	break;
 	
       case SPR_BON2:
-	player->armorpoints++;		// can go over 100%
-	if (player->armorpoints > deh_max_armor)
-	    player->armorpoints = deh_max_armor;
+	// [NS] Don't reduce if already over cap.
+	i = player->armorpoints + 1;	// can go over 100%
+	if (i > deh_max_armor)
+	    i = deh_max_armor;
+	if (i > player->armorpoints)
+		player->armorpoints = i;
         // deh_green_armor_class only applies to the green armor shirt;
         // for the armor helmets, armortype 1 is always used.
 	if (!player->armortype)
@@ -408,10 +416,15 @@ P_TouchSpecialThing
 	break;
 	
       case SPR_SOUL:
-	player->health += deh_soulsphere_health;
-	if (player->health > deh_max_soulsphere)
-	    player->health = deh_max_soulsphere;
-	player->mo->health = player->health;
+	// [NS] Don't reduce if already over cap.
+	i = player->health + deh_soulsphere_health;
+	if (i > deh_max_soulsphere)
+	    i = deh_max_soulsphere;
+	if (i > player->health)
+	{
+		player->health = i;
+		player->mo->health = player->health;
+	}
 	player->message = DEH_String(GOTSUPER);
 	sound = sfx_getpow;
 	break;
@@ -419,8 +432,12 @@ P_TouchSpecialThing
       case SPR_MEGA:
 	if (gamemode != commercial)
 	    return;
-	player->health = deh_megasphere_health;
-	player->mo->health = player->health;
+	// [NS] Don't reduce if already over cap.
+	if (player->health < deh_megasphere_health)
+	{
+		player->health = deh_megasphere_health;
+		player->mo->health = player->health;
+	}
         // We always give armor type 2 for the megasphere; dehacked only 
         // affects the MegaArmor.
 	P_GiveArmor (player, 2);
