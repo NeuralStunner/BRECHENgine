@@ -678,10 +678,13 @@ ST_Responder (event_t* ev)
 	plyr->cheats ^= CF_GODMODE;
 	if (plyr->cheats & CF_GODMODE)
 	{
-	  if (plyr->mo)
-	    plyr->mo->health = 100;
-	  
+	  if (plyr->health < deh_god_mode_health)
+	  {
 	  plyr->health = deh_god_mode_health;
+	  if (plyr->mo)
+	    plyr->mo->health = plyr->health;
+	  }
+	  
 	  plyr->message = DEH_String(STSTR_DQDON);
 	}
 	else 
